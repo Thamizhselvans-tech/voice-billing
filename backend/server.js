@@ -8,6 +8,17 @@ dotenv.config();
 
 const app = express();
 
+// TEMP SEED ROUTE
+app.get('/api/seed', async (req, res) => {
+  try {
+    const seed = require('./utils/seed');
+    await seed();
+    res.json({ message: "Seed done ✅" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Middleware
 app.use(cors({
   origin: "*",
