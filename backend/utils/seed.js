@@ -31,10 +31,15 @@ async function seed() {
   await User.deleteMany({});
   await Product.deleteMany({});
 
-  await User.create([
-    { name: 'Admin User', email: 'admin@billing.com', password: 'admin123', role: 'admin' },
-    { name: 'Billing Operator', email: 'operator@billing.com', password: 'operator123', role: 'operator' }
-  ]);
+  const bcrypt = require('bcryptjs');
+
+const hashedAdmin = await bcrypt.hash('admin123', 10);
+const hashedOperator = await bcrypt.hash('operator123', 10);
+
+await User.create([
+  { name: 'Admin User', email: 'admin@billing.com', password: hashedAdmin, role: 'admin' },
+  { name: 'Billing Operator', email: 'operator@billing.com', password: hashedOperator, role: 'operator' }
+]);
 
   await Product.insertMany(products);
 
