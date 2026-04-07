@@ -8,20 +8,9 @@ dotenv.config();
 
 const app = express();
 
-// TEMP SEED ROUTE
-app.get('/api/seed', async (req, res) => {
-  try {
-    const seed = require('./utils/seed');
-    await seed();
-    res.json({ message: "Seed done ✅" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // Middleware
 app.use(cors({
-  origin: "*",
+  origin: "*", // you can later restrict to your frontend URL
   credentials: true
 }));
 app.use(express.json());
@@ -31,16 +20,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/invoices', express.static(path.join(__dirname, 'invoices')));
 
 // Routes
-app.use('/api/auth',     require('./routes/auth'));
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
-app.use('/api/voice',    require('./routes/voice'));
-app.use('/api/bill',     require('./routes/bill'));
-app.use('/api/invoice',  require('./routes/invoice'));
-app.use('/api/dashboard',require('./routes/dashboard'));
+app.use('/api/voice', require('./routes/voice'));
+app.use('/api/bill', require('./routes/bill'));
+app.use('/api/invoice', require('./routes/invoice'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Voice Billing API is running', timestamp: new Date() });
+  res.json({
+    status: 'OK',
+    message: 'Voice Billing API is running',
+    timestamp: new Date()
+  });
+});
+
+// Default route (optional - avoid "Cannot GET /")
+app.get('/', (req, res) => {
+  res.send('🚀 Voice Billing Backend is Running');
 });
 
 // Connect MongoDB and start server
